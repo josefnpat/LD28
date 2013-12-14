@@ -44,9 +44,9 @@ function gamestate_key.init(self)
   for i = 1,4 do
     gamestate_key.keyinputs[i] = loveframes.Create("textinput",gamestate_key.frame)
     gamestate_key.keyinputs[i]:SetPos(
-      (i-1)*(48+2)+gamestate_key.x,
+      (i-1)*(48)+gamestate_key.x,
       gamestate_key.y+32*2.5)
-    gamestate_key.keyinputs[i]:SetWidth(48)
+    gamestate_key.keyinputs[i]:SetWidth(46)
     gamestate_key.keyinputs[i]:SetLimit(4)
     if settings.data.secure_key then
       local part = (i-1)*4+1
@@ -88,7 +88,7 @@ function gamestate_key.init(self)
 
     local obj = {
       requests = {
-        {func = "getuser",args="asdasd"}
+        {func = "getuser"}
       }
     }
 
@@ -99,7 +99,6 @@ function gamestate_key.init(self)
       gamestate_key.text_info_dt = 0
     else
       userdata = response.results[1].ret
-      print_r(response)
       Gamestate.switch(states['game'])
     end
 

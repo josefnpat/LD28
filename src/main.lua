@@ -1,3 +1,6 @@
+git,git_count = "missing git.lua",0
+pcall(require, "git")
+
 Gamestate = require('gamestate')
 
 require('json')
@@ -25,14 +28,20 @@ states = {}
 http = require('socket.http')
 
 require("lf")
-loveframes.config["ACTIVESKIN"] = "Gray"
+loveframes.config["ACTIVESKIN"] = "Dark"
 
 require("lib.bslf.bit").lut()
 hashlib = require("lib.hash")
 com = require('com')
-server_base_url = "http://50.116.63.25/public/LD28/"
+require('config')
+
+game_name = "unnamed mmo bullshit"
 
 function love.load()
+
+  com.load()
+
+  love.graphics.setCaption(game_name.." - v"..git_count.." ["..git.."]")
 
   states['key'] = require('gamestate_key')
   states['game'] = require('gamestate_game')
@@ -43,6 +52,9 @@ function love.load()
 end
 
 function love.update(dt)
+
+   com.update(dt)
+
   loveframes.update(dt)
 end
                  
