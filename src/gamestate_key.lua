@@ -33,7 +33,7 @@ function gamestate_key.init(self)
   gamestate_key.username_help:SetWidth(64)
   gamestate_key.username_help.OnClick = function(object)
     print("Opening "..server_base_url)
-    openURL(server_base_url)
+    openURL("https"..string.sub(server_base_url,5))
   end
 
   gamestate_key.text_secure = loveframes.Create("text",gamestate_key.frame)
