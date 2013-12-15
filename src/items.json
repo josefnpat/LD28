@@ -2,56 +2,68 @@
   "1": {
     "name": "Missile Launcher",
     "enemy_hp": -10,
-    "player_ap": -10
+    "player_ap": -10,
+    "cost": 20
   },
   "2": {
     "name": "Energy Drain",
     "enemy_ap": -20,
-    "player_ap": -10
+    "player_ap": -10,
+    "cost": 10
   },
   "3": {
     "name": "Engine Jammer",
     "enemy_evade": -50,
-    "player_ap": -20
+    "player_ap": -20,
+    "cost": 10
   },
   "4": {
     "name": "EMP",
     "enemy_lock": 10,
-    "player_ap": -20
+    "player_ap": -20,
+    "cost": 10
   },
   "5": {
     "name": "Repair Arm",
     "player_hp": 50,
-    "player_ap": -25
+    "player_ap": -25,
+    "cost": 10
   },
   "6": {
     "name": "Recharger",
     "player_ap": 50,
-    "player_lock": 10
+    "player_lock": 10,
+    "cost": 10
   },
   "7": {
     "name": "Lock Scrambler",
     "player_lock": -10,
-    "player_ap": 10
+    "player_ap": 10,
+    "cost": 10
   },
   "8": {
     "name": "Charged Armor",
-    "base_hp": 100
+    "base_hp": 100,
+    "cost": 10
   },
   "9": {
     "name": "Battery",
-    "base_ap": 10
+    "base_ap": 10,
+    "cost": 10
   },
   "10": {
     "name": "Thrusters",
-    "base_evade": 10
+    "base_evade": 10,
+    "cost": 10
   },
   "11": {
     "name": "Stabilizer",
-    "base_lock": -10
+    "base_lock": -10,
+    "cost": 10
   },
   "12": {
     "name": "Cloak",
-    "base_cloak": 43200
+    "base_cloak": 43200,
+    "cost": 10
   }
 }
