@@ -190,24 +190,32 @@ end
 gamestate_game.item_select = 1
 
 function gamestate_game.draw(self)
+
   love.graphics.printf(
     "WELCOME TO THE PRE-PRE-PRE-DARE-PROTOTYPE-ALPHA\n"..
     "USER "..settings.data.username.."\n"..
     "Your current position is ("..userdata.x..","..userdata.y..","..userdata.z..")\n"..
     "Your ap: "..userdata.ap.."/"..userdata.ap_max.."\n"..
+    "Your hp: "..userdata.hp.."/"..userdata.hp_max.."\n"..
+    "Your evade: "..userdata.evade.."/"..userdata.evade_max.."\n"..
+    "Your lock: "..userdata.lock.."/"..userdata.lock_max.."\n"..
+    "Your cloak: "..userdata.cloak.."/"..userdata.cloak_max.."\n"..
     "Your speed is: "..userdata.speed.." m/s\n"..
     ( (userdata.warp_eta>0) and ("ETA "..round(userdata.warp_eta-ctime).." seconds") or ("Not in warp." ) ).."\n"..
     "",100,100,600,"center")
   if userdata then
     for i = 1,8 do
       if userdata.items[i] then
-        love.graphics.draw(items[i].img,i*64,100)
+        love.graphics.draw(items[i].img,i*64,0)
       else
-        love.graphics.draw(items_empty,i*64,100)
+        love.graphics.draw(items_empty,i*64,0)
       end
       if i == gamestate_game.item_select then
-        love.graphics.draw(items_select,i*64,100)
+        love.graphics.draw(items_select,i*64,0)
       end
+    end
+    if userdata.items[gamestate_game.item_select] then
+      love.graphics.print( items[userdata.items[gamestate_game.item_select]].name , 64, 64)
     end
   end
 end
