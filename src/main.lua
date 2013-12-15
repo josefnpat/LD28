@@ -41,7 +41,7 @@ hashlib = require("lib.hash")
 com = require('com')
 require('config')
 
-game_name = "unnamed mmo bullshit"
+game_name = "Bitmo Pirates MMO"
 
 function love.load()
   items_empty = love.graphics.newImage("item_img/empty.png")
@@ -57,6 +57,12 @@ function love.load()
   for i = 1,12 do
     items_img[i] = love.graphics.newImage("item_img/"..i..".png")
   end
+
+  items_t = {}
+  for i = 1,6 do
+    items_t[i] = love.graphics.newImage("item_img/t"..i..".png")
+  end
+
 
   com.load()
 

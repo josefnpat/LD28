@@ -4,7 +4,7 @@ $mckey = "LD28_DATA";
 
 $salt = "FUCKYOUHEADCRUSHER24";
 
-$game_name = "GAME NAME";
+$game_name = "Bitmo Pirates MMO";
 
 // OH GOD STOP
 

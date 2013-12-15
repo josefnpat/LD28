@@ -2,10 +2,24 @@ gamestate_game = {}
 
 function gamestate_game.init()
 
+  -- Player Frame
+
+  gamestate_game.frame_p = loveframes.Create("frame")
+  gamestate_game.frame_p:SetSize(256,256)
+  gamestate_game.frame_p:SetPos(8*64,0)
+  gamestate_game.frame_p:ShowCloseButton(false)
+  gamestate_game.frame_p:SetName("Player Info")
+
+  gamestate_game.frame_p_text = loveframes.Create("text",
+  gamestate_game.frame_p)
+  gamestate_game.frame_p_text:SetSize(256-32,256-48)
+  gamestate_game.frame_p_text:SetPos(16,32)
+
   -- Move Frame
 
   gamestate_game.frame_move = loveframes.Create("frame")
   gamestate_game.frame_move:SetSize(64*4+32,2.5*32)
+  gamestate_game.frame_move:SetPos(0,64*4)
   gamestate_game.frame_move:ShowCloseButton(false)
   gamestate_game.frame_move:SetName("Warp Destination")
 
@@ -131,13 +145,13 @@ function gamestate_game.init()
 
   gamestate_game.iteminfo = {}
   gamestate_game.iteminfo.x = 16
-  gamestate_game.iteminfo.y = 16
+  gamestate_game.iteminfo.y = 16+64
   gamestate_game.iteminfo.w = 256+32
   gamestate_game.iteminfo.h = 64 + 40
   gamestate_game.frame_iteminfo = loveframes.Create("frame")
   gamestate_game.frame_iteminfo:SetName("Item Info")
   gamestate_game.frame_iteminfo:SetSize(gamestate_game.iteminfo.w,gamestate_game.iteminfo.h)
-  gamestate_game.frame_iteminfo:SetPos(100,100)
+  gamestate_game.frame_iteminfo:SetPos(0,64)
   gamestate_game.frame_iteminfo:ShowCloseButton(false) 
 
   gamestate_game.iteminfo_image = loveframes.Create("image", gamestate_game.frame_iteminfo)
@@ -293,6 +307,20 @@ function gamestate_game.update(self,dt)
     end
   end
 
+  gamestate_game.frame_p_text:SetText(
+    "Welcome to Bitmo Pirates MMO! \n "..
+    "Your current position is ("..userdata.x..","..userdata.y..","..userdata.z..") \n "..
+    "Your ap: "..userdata.ap.."/"..userdata.ap_max.." \n "..
+    "Your hp: "..userdata.hp.."/"..userdata.hp_max.." \n "..
+    "Your evade: "..userdata.evade.."/"..userdata.evade_max.." \n "..
+    "Your lock: "..userdata.lock.."/"..userdata.lock_max.." \n "..
+--    "Your cloak: "..userdata.cloak.."/"..userdata.cloak_max.."\n"..
+    "Your speed is: "..userdata.speed.." m/s \n "..
+    "Your have "..userdata.credits.." credits \n "..
+    ( (userdata.warp_eta>0) and ("ETA "..round(userdata.warp_eta-ctime).." seconds") or ("Not in warp." ) )
+
+  )
+
 end
 
 function gamestate_game.showitem(id,buy,sell)
@@ -327,29 +355,20 @@ gamestate_game.item_select = 1
 
 function gamestate_game.draw(self)
 
-  love.graphics.printf(
-    "WELCOME TO THE PRE-PRE-PRE-DARE-PROTOTYPE-ALPHA\n"..
-    "USER "..settings.data.username.."\n"..
-    "Your current position is ("..userdata.x..","..userdata.y..","..userdata.z..")\n"..
-    "Your ap: "..userdata.ap.."/"..userdata.ap_max.."\n"..
-    "Your hp: "..userdata.hp.."/"..userdata.hp_max.."\n"..
-    "Your evade: "..userdata.evade.."/"..userdata.evade_max.."\n"..
-    "Your lock: "..userdata.lock.."/"..userdata.lock_max.."\n"..
---    "Your cloak: "..userdata.cloak.."/"..userdata.cloak_max.."\n"..
-    "Your speed is: "..userdata.speed.." m/s\n"..
-    "Your have "..userdata.credits.." credits\n"..
-    ( (userdata.warp_eta>0) and ("ETA "..round(userdata.warp_eta-ctime).." seconds") or ("Not in warp." ) ).."\n"..
-    "",100,100,600,"center")
+
+
   if userdata then
     for i = 1,8 do
-      love.graphics.draw(items_empty,i*64,0)
+      love.graphics.draw(items_empty,(i-1)*64,0)
       if userdata.items[i..""] then
         local img_key = items[userdata.items[i..""]].img_key
+        local t = items[userdata.items[i..""]].t
         local img = items_img[tonumber(img_key)]
-        love.graphics.draw(img,i*64,0)
+        love.graphics.draw(img,(i-1)*64,0)
+        love.graphics.draw(items_t[t],(i-1)*64,0)
       end
       if i == gamestate_game.item_select then
-        love.graphics.draw(items_select,i*64,0)
+        love.graphics.draw(items_select,(i-1)*64,0)
       end
     end
     if userdata.items[gamestate_game.item_select] then
@@ -366,4 +385,9 @@ function gamestate_game.keypressed(self,key)
   end
 end
 
+function gamestate_game.mousepressed(self,x,y,b)
+  if y < 64 and x < 64*8 then
+    gamestate_game.item_select = math.floor(x/64)+1
+  end
+end
 return gamestate_game
