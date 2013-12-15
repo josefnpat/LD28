@@ -71,11 +71,5 @@
     "base_lock": -10,
     "value": 10,
     "use": false
-  },
-  "12": {
-    "name": "Cloak",
-    "base_cloak": 43200,
-    "value": 10,
-    "use": false
   }
 }

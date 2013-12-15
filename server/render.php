@@ -41,9 +41,9 @@ $userbase['lock'] = 0;
 $userbase['lock_max'] = 120;
 $userbase['lock_rate'] = -1;
 
-$userbase['cloak'] = 0;
-$userbase['cloak_max'] = 0;
-$userbase['cloak_rate'] = 100;
+//$userbase['cloak'] = 0;
+//$userbase['cloak_max'] = 0;
+//$userbase['cloak_rate'] = 100;
 
 function get_user_info($user,$val,$max=false){
   global $userbase;
@@ -105,9 +105,9 @@ function default_user($user){
   $user->lock_max = get_user_info($user,"lock",true);
   $user->lock_update = isset($user->lock_update) ? $user->lock_update : time();
 
-  $user->cloak = get_user_info($user,"cloak");
-  $user->cloak_max = get_user_info($user,"cloak",true);
-  $user->cloak_update = isset($user->cloak_update) ? $user->cloak_update : time();
+//  $user->cloak = get_user_info($user,"cloak");
+//  $user->cloak_max = get_user_info($user,"cloak",true);
+//  $user->cloak_update = isset($user->cloak_update) ? $user->cloak_update : time();
 
   $user->credits = isset($user->credits) ? $user->credits : 100;
   $user->msgs = isset($user->msgs) ? $user->msgs : array();
@@ -152,7 +152,7 @@ function update_user($user){
 
   global $userbase;
 
-  foreach(array("ap","hp","evade","lock","cloak") as $type){
+  foreach(array("ap","hp","evade","lock") as $type){
 
     $type_update = $type."_update";
     $type_max = $type."_max";
@@ -205,8 +205,8 @@ function api_getuser($user,$args){
   $ruser->lock = $duser->lock;
   $ruser->lock_max = $duser->lock_max;
 
-  $ruser->cloak = $duser->cloak;
-  $ruser->cloak_max = $duser->cloak_max;
+//  $ruser->cloak = $duser->cloak;
+//  $ruser->cloak_max = $duser->cloak_max;
 
   $ruser->credits = $duser->credits;
 

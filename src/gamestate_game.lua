@@ -331,7 +331,7 @@ function gamestate_game.draw(self)
     "Your hp: "..userdata.hp.."/"..userdata.hp_max.."\n"..
     "Your evade: "..userdata.evade.."/"..userdata.evade_max.."\n"..
     "Your lock: "..userdata.lock.."/"..userdata.lock_max.."\n"..
-    "Your cloak: "..userdata.cloak.."/"..userdata.cloak_max.."\n"..
+--    "Your cloak: "..userdata.cloak.."/"..userdata.cloak_max.."\n"..
     "Your speed is: "..userdata.speed.." m/s\n"..
     "Your have "..userdata.credits.." credits\n"..
     ( (userdata.warp_eta>0) and ("ETA "..round(userdata.warp_eta-ctime).." seconds") or ("Not in warp." ) ).."\n"..
