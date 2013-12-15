@@ -35,6 +35,7 @@ function default_user($user){
   $user->warp_range = isset($user->warp_range) ? $user->warp_range : 10;
   $user->speed = isset($user->speed) ? $user->speed : 1;
   $user->scan_range = isset($user->scan_range) ? $user->scan_range : 10;
+  $user->items = isset($user->items) ? $user->items : array(1,2,3,4,5,6,7);
   return $user;
 }
 
@@ -86,6 +87,7 @@ function api_getuser($user,$args){
   $ruser->speed = $duser->speed;
   $ruser->ap = $duser->ap;
   $ruser->ap_max = $duser->ap_max;
+  $ruser->items = $duser->items;
   $ret = new stdClass();
   $ret->ret = $ruser;
   return $ret;
@@ -168,7 +170,10 @@ function api_move($user,$args){
 function api_attack($user,$args){
   global $db;
   $duser = default_user($user);
-  if(!isset($args->target)or !is_string($args->target)){
+  $valid = true;
+  if(!isset($args->target)or !is_string($args->target)){ $valid = false; }
+  if(!isset($args->item)or !is_int($args->item)){ $valid = false; }
+  if(!$valid){
     return make_error("Invalid arguments.");
   }
   $valid_target = false;
@@ -186,7 +191,7 @@ function api_attack($user,$args){
     }
   }
   if($valid_target){
-    return make_error("TODO: Attack!");
+    return make_error("TODO: Attack with item ".$args->item."!");
   } else {
     return make_error("Invalid target.");
   }
