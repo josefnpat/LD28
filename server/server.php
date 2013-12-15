@@ -1,8 +1,9 @@
 <?php
 
 require('config.php');
-
 require('render.php');
+
+$items = json_decode(file_get_contents("items.json"));
 
 $return = new stdClass();
 $return->error = array();

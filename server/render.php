@@ -24,10 +24,48 @@ function render_request($user,$request){
   }
 }
 
+$userbase = array();
+$userbase['ap'] = 100;
+$userbase['ap_max'] = 100;
+$userbase['hp'] = 100;
+$userbase['hp_max'] = 100;
+$userbase['evade'] = 10;
+$userbase['evade_max'] = 10;
+$userbase['lock'] = 0;
+$userbase['lock_max'] = 120;
+$userbase['cloak'] = 0;
+$userbase['cloak_max'] = 43200;
+
+function get_user_info($user,$val,$max=false){
+  global $userbase;
+  global $items;
+
+  if($max){
+
+    $base = $userbase[$val."_max"];
+    foreach($user->items as $itemid){
+
+      foreach($items->$itemid as $modikey => $modival){
+        if($modikey == "base_$val"){
+          $base += $modival;
+        }
+      }
+    }
+    return $base;
+
+  } else {
+
+    if(isset($user->$val)){
+      return $user->$val;
+    } else {
+      return $userbase[$val];
+    }
+
+  }
+
+}
+
 function default_user($user){
-  $user->ap = isset($user->ap) ? $user->ap : 100;
-  $user->ap_update = isset($user->ap_update) ? $user->ap_update : time();
-  $user->ap_max = isset($user->ap_max) ? $user->ap_max : 100;
   $user->x = isset($user->x) ? $user->x : 0;
   $user->y = isset($user->y) ? $user->y : 0;
   $user->z = isset($user->z) ? $user->z : 0;
@@ -35,7 +73,24 @@ function default_user($user){
   $user->warp_range = isset($user->warp_range) ? $user->warp_range : 10;
   $user->speed = isset($user->speed) ? $user->speed : 1;
   $user->scan_range = isset($user->scan_range) ? $user->scan_range : 10;
-  $user->items = isset($user->items) ? $user->items : array(1,2,3,4,5,6,7);
+  $user->items = array(12);//isset($user->items) ? $user->items : array(1);
+
+  $user->ap = get_user_info($user,"ap");
+  $user->ap_max = get_user_info($user,"ap",true);
+  $user->ap_update = isset($user->ap_update) ? $user->ap_update : time();
+
+  $user->hp = get_user_info($user,"hp");
+  $user->hp_max = get_user_info($user,"hp",true);
+
+  $user->evade = get_user_info($user,"evade");
+  $user->evade_max = get_user_info($user,"evade",true);
+
+  $user->lock = get_user_info($user,"lock");
+  $user->lock_max = get_user_info($user,"lock",true);
+
+  $user->cloak = get_user_info($user,"cloak");
+  $user->cloak_max = get_user_info($user,"cloak",true);
+
   return $user;
 }
 
@@ -87,6 +142,19 @@ function api_getuser($user,$args){
   $ruser->speed = $duser->speed;
   $ruser->ap = $duser->ap;
   $ruser->ap_max = $duser->ap_max;
+
+  $ruser->hp = $duser->hp;
+  $ruser->hp_max = $duser->hp_max;
+
+  $ruser->evade = $duser->evade;
+  $ruser->evade_max = $duser->evade_max;
+
+  $ruser->lock = $duser->lock;
+  $ruser->lock_max = $duser->lock_max;
+
+  $ruser->cloak = $duser->cloak;
+  $ruser->cloak_max = $duser->cloak_max;
+
   $ruser->items = $duser->items;
   $ret = new stdClass();
   $ret->ret = $ruser;
