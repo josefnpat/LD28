@@ -19,7 +19,7 @@ function render_request($user,$request){
     if(function_exists($fname)){
       return $fname($user,isset($request->args) ? $request->args : array() );
     } else {
-      return make_error("Function not availible.");
+      return make_error("Function not availible: ".$fname);
     }
   }
 }
@@ -203,7 +203,7 @@ function api_sendchat($user,$args){
   }
   $msgobj = new stdClass();
   $msgobj->name = $user->name;
-  $msgobj->time = time();
+  $msgobj->time = microtime(true);
   $msgobj->data = substr($args->msg,0,128);
 
   if(!isset($db->chat)){
@@ -217,4 +217,22 @@ function api_sendchat($user,$args){
   dbsave();
   return new stdClass();
   
+}
+
+function api_getchat($user,$args){
+  global $db;
+  if(!isset($args->time) or !is_int($args->time)){
+    return make_error("Invalid arguments.");
+  }
+  $ret = new stdClass();
+  $ret->ret = array();
+  if(isset($db->chat)){
+    foreach($db->chat as $msg){
+      if(floor($msg->time)+1 >= $args->time and $user->name != $msg->name){
+        $ret->ret[] = $msg;
+      }
+    }
+  }
+  array_reverse($ret->ret);
+  return $ret;
 }
