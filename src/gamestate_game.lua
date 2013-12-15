@@ -90,15 +90,19 @@ function gamestate_game.init()
   gamestate_game.msgbox_chatsend:SetSize(64, 32)
   gamestate_game.msgbox_chatsend:SetText("Send")
   gamestate_game.msgbox_chatsend.OnClick = function(object)
-     com.enqueue_request(
-      {func="sendchat",
-       args = {
-         msg = gamestate_game.msgbox_chatin:GetValue()
+    com.enqueue_request({
+      func="sendchat",
+      args = {
+        msg = gamestate_game.msgbox_chatin:GetValue()
         }
       },
-      requests.chatsend)
+      requests.sendchat)
+    gamestate_game.msgbox_add(
+      settings.data.username..": "..gamestate_game.msgbox_chatin:GetValue())
+    gamestate_game.msgbox_chatin:Clear()
   end
 
+  gamestate_game.msgbox_chatin.OnEnter = gamestate_game.msgbox_chatsend.OnClick
 
   -- Player list
 
@@ -142,12 +146,27 @@ end
 gamestate_game.hitserver = 1
 gamestate_game.hitserver_dt = gamestate_game.hitserver
 
+gamestate_game.chat_timer = 1.5
+gamestate_game.chat_timer_dt = gamestate_game.chat_timer
+
 function gamestate_game.update(self,dt)
   gamestate_game.hitserver_dt = gamestate_game.hitserver_dt + dt
+  gamestate_game.chat_timer_dt = gamestate_game.chat_timer_dt + dt
   if gamestate_game.hitserver_dt > gamestate_game.hitserver then
     gamestate_game.hitserver_dt = 0
     com.enqueue_request({func="getuser"},requests.getuser)
     com.enqueue_request({func="getusers"},requests.getusers)
+    if gamestate_game.chat_timer_dt > gamestate_game.chat_timer then
+      gamestate_game.chat_timer_dt = 0
+      com.enqueue_request({
+          func="getchat",
+          args={
+            time=stime
+          }
+        },
+        requests.getchat)
+    end 
+
   end
   if userdata then
     if userdata.warp_eta > 0 then

@@ -116,10 +116,23 @@ function requests.move(response)
   end
 end
 
-function requests.chatsend(response)
+function requests.sendchat(response)
   if response.error then
     for _,v in pairs(response.error) do
       gamestate_game.msgbox_add("Error: "..v)
+    end
+  end
+end
+
+function requests.getchat(response)
+  if response.error then
+    for _,v in pairs(response.error) do
+      gamestate_game.msgbox_add("Error: "..v)
+    end
+  end
+  if response.ret then
+    for i,v in pairs(response.ret) do
+      gamestate_game.msgbox_add(v.name..": "..v.data)
     end
   end
 end
