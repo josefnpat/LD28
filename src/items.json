@@ -52,6 +52,6 @@
   },
   "12": {
     "name": "Cloak",
-    "cloak": 43200
+    "base_cloak": 43200
   }
 }
