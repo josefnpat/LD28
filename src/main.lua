@@ -6,7 +6,11 @@ Gamestate = require('gamestate')
 require('json')
 
 settings = {}
-settings.file = "settings.json"
+if arg[2] then
+  settings.file = arg[2].."settings.json"
+else
+  settings.file = "settings.json"
+end
 settings.appver = 1
 
 require('requests')
@@ -30,7 +34,7 @@ states = {}
 http = require('socket.http')
 
 require("lf")
-loveframes.config["ACTIVESKIN"] = "Dark"
+loveframes.config["ACTIVESKIN"] = "Gray"
 
 require("lib.bslf.bit").lut()
 hashlib = require("lib.hash")
@@ -67,7 +71,6 @@ end
                  
 function love.draw()
   loveframes.draw()
-  love.graphics.print(ctime,0,0)
 end
  
 function love.mousepressed(x, y, button)
@@ -111,4 +114,9 @@ end
 function love.quit()
   local raw = json.encode(settings.data)
   love.filesystem.write(settings.file, raw)
+end
+
+function round(num, idp)
+  local mult = 10^(idp or 0)
+  return math.floor(num * mult + 0.5) / mult
 end
