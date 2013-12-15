@@ -7,9 +7,9 @@ require('render.php');
 $return = new stdClass();
 $return->error = array();
 
-if(isset($_GET['i'])){
-  $sha_in = substr($_GET['i'],0,40);
-  $raw_in = substr($_GET['i'],40);
+if(isset($_POST['i'])){
+  $sha_in = substr($_POST['i'],0,40);
+  $raw_in = substr($_POST['i'],40);
 
   if( ($in = json_decode($raw_in)) !== NULL ){
     $found_user = false;
