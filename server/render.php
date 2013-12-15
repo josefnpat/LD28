@@ -54,9 +54,9 @@ function get_user_info($user,$val,$max=false){
     $base = $userbase[$val."_max"];
     foreach($user->items as $itemid){
 
-      if(isset($items->$itemid)){
+      if(isset($items[$itemid-1])){
 
-        foreach($items->$itemid as $modikey => $modival){
+        foreach($items[$itemid-1] as $modikey => $modival){
           if($modikey == "base_$val"){
             $base += $modival;
           }
@@ -333,16 +333,19 @@ function api_attack($user,$args){
     $user_items = $user->items;
     $slot = $args->item;
     $item_id = $user_items[$slot];
-    $item = $items->$item_id;
+    $item = $items[$item_id-1];
     
     if($item->use){
       return make_error("Can't attack with this item.");
     }
 
-    if($item->player_ap < 0 and $user->ap < -$item->player_ap){
+    if(isset($item->player_ap) and $item->player_ap < 0 and $user->ap < -$item->player_ap){
       return make_error("Not enough AP.");
     }
 
+    if($valid_target->evade >= rand(1,100)){
+      return make_error("Your attack was evaded.");
+    }
 
     $info_attack = array();
     foreach($item as $modikey => $modival){
@@ -371,6 +374,7 @@ function api_attack($user,$args){
             $valid_target->deaths += 1;
             $user->msgs[] = "You kill ".$user->name.".";
             $valid_target->msgs[] = $user->name." kills you.";
+            update_user($valid_target);
           }
         }
 
@@ -454,11 +458,7 @@ function api_buy($user,$args){
 
   $item_id = $args->item;
 
-  if(!isset($items->$item_id)){
-    return make_error("Invalid item.");
-  }
-
-  $item = $items->$item_id;
+  $item = $items[$item_id-1];
 
   if($duser->credits < $item->value){
     return make_error("You don't have enough credits.");
@@ -488,7 +488,7 @@ function api_sell($user,$args){
   }
   $item_id = $user->items[$args->slot];
   
-  $item = $items->$item_id;
+  $item = $items[$item_id-1];
 
   $user->credits += floor($item->value/2);
   unset($user->items[$args->slot]);
@@ -510,7 +510,7 @@ function api_use($user,$args){
   $user_items = $user->items;
   $slot = $args->slot;
   $item_id = $user_items[$slot];
-  $item = $items->$item_id;
+  $item = $items[$item_id-1];
   
   if(!$item->use){
     return make_error("Can't use this item.");
