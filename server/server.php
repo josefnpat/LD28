@@ -40,6 +40,8 @@ if(count($return->error) == 0){
   unset($return->error);
 }
 
+$return->server_time = time();
+
 $jout = json_encode($return);
 
 // Why did this take so damn long to get a flag?
