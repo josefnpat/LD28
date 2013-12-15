@@ -1,0 +1,41 @@
+Theme: You Only Get One
+
+Once chance?
+
+Permadeath
+
+SaaS game that bans on IP on death
+
+You only get one life
+
+Hard FTL kind of game
+
+MMO via http (~500ms lag, 1s refresh via json?)
+  Permadeath (one life)
+  Space exploration
+  Skills over time
+  Items & Ships(?)
+  Gambit system for fighting (derived from items)?  
+    Attack
+    Run Away
+    EMP
+
+  Use web ssh for login encryption key
+
+You only have one arm/ finger / appendage
+
+Random story / char generator, so that every game is unique.
+
+Click and Point adventure
+You need to get out of the room, and the number that is generated is random.
+Find the clues (which are also random) and use that to figure out the final lock?
+
+Cop Out: You can only get one a nuke!
+
+Game about abducting children
+  You live in a police state, and every offence is punishable by death
+
+Hitman kind of game, no saves?
+
+
+

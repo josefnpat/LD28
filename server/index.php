@@ -69,9 +69,10 @@ if(isset($_POST['exe'])){
 
     <h2>Download Client</h2>
     <ul>
-      <li>Windows &mdash; <a href="#">Download</a></li>
-      <li>OS X &mdash; <a href="#">Download</a></li>
-      <li>Linux/Source (L&Ouml;VE 0.8.0) &mdash; <a href="https://github.com/josefnpat/LD28">GitHub</a></li>
+      <li>Windows &mdash; <a href="http://missingsentinelsoftware.com/system/files/BPMMO_win-x86%5Be3402c9%5D.zip">Download 32bit</a> <a href="http://missingsentinelsoftware.com/system/files/BPMMO_win-x64%5Be3402c9%5D.zip">Download 32bit</a></li>
+      <li>OS X &mdash; <a href="http://missingsentinelsoftware.com/system/files/BPMMO_macosx%5Be3402c9%5D.zip">Download</a></li>
+      <li>L&Ouml;VE 0.8.0 &mdash; <a href="http://missingsentinelsoftware.com/system/files/BPMMO_e3402c9.love">Download</a></li>
+      <li>Source (GitHub) &mdash; <a href="https://github.com/josefnpat/LD28">GitHub</a></li>
     </ul>
 
     <legs></legs>
