@@ -54,11 +54,17 @@ function get_user_info($user,$val,$max=false){
     $base = $userbase[$val."_max"];
     foreach($user->items as $itemid){
 
-      foreach($items->$itemid as $modikey => $modival){
-        if($modikey == "base_$val"){
-          $base += $modival;
+      if(isset($items->$itemid)){
+
+        foreach($items->$itemid as $modikey => $modival){
+          if($modikey == "base_$val"){
+            $base += $modival;
+          }
         }
+
       }
+
+
     }
     return $base;
 
@@ -251,6 +257,9 @@ function api_move($user,$args){
   $duser = default_user($user);
   if($duser->warp_eta > 0){
     return make_error("You are currently in warp.");
+  }
+  if($duser->lock > 0){
+    return make_error("You are currently locked down.");
   }
   $valid = true;
   if(!isset($args->x) or !is_int($args->x)){$valid = false; }
@@ -510,6 +519,11 @@ function api_use($user,$args){
   if($item->player_ap < 0 and $user->ap < -$item->player_ap){
     return make_error("Not enough AP.");
   }
+
+  if($item->player_lock + $duser->lock > $duser->lock_max){
+    return make_error("Can't lock down any more.");
+  }
+
 
   foreach($item as $modikey => $modival){
     $raw = explode("_",$modikey);
