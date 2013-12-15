@@ -1,4 +1,4 @@
-<?php
+<h3><?php
 
 require('config.php');
 
@@ -36,7 +36,7 @@ if(isset($_POST['exe'])){
 
 } 
 
-?><html>
+?></h3><html>
   <head>
     <title><?php echo $game_name; ?></title>
   </head>
@@ -44,6 +44,8 @@ if(isset($_POST['exe'])){
     <h1><?php echo $game_name; ?></h1>
 
     <p>There are currently <?php echo count($db->users); ?> users.</p>
+
+    <p>Check <a href="score.php">scores</a>
 
     <p>How to play:</p>
 
