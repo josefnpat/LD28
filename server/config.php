@@ -14,7 +14,6 @@ $memcache->addServer("localhost");
 // RESET
 //$memcache->delete($mckey);
 
-
 $db = $memcache->get($mckey);
 
 if($db == false){// INIT THE DB
