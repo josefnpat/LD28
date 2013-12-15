@@ -187,6 +187,8 @@ function gamestate_game.update(self,dt)
 
 end
 
+gamestate_game.item_select = 1
+
 function gamestate_game.draw(self)
   love.graphics.printf(
     "WELCOME TO THE PRE-PRE-PRE-DARE-PROTOTYPE-ALPHA\n"..
@@ -196,6 +198,25 @@ function gamestate_game.draw(self)
     "Your speed is: "..userdata.speed.." m/s\n"..
     ( (userdata.warp_eta>0) and ("ETA "..round(userdata.warp_eta-ctime).." seconds") or ("Not in warp." ) ).."\n"..
     "",100,100,600,"center")
+  if userdata then
+    for i = 1,8 do
+      if userdata.items[i] then
+        love.graphics.draw(items[i].img,i*64,100)
+      else
+        love.graphics.draw(items_empty,i*64,100)
+      end
+      if i == gamestate_game.item_select then
+        love.graphics.draw(items_select,i*64,100)
+      end
+    end
+  end
+end
+
+function gamestate_game.keypressed(self,key)
+  local kan = tonumber(key)
+  if kan and kan >= 1 and kan <=8 then
+    gamestate_game.item_select = kan
+  end
 end
 
 return gamestate_game

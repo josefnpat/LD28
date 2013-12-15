@@ -89,7 +89,8 @@ function requests.getusers(response)
               {
               func="attack",
                 args = {
-                  target = object.target
+                  target = object.target,
+                  item = gamestate_game.item_select
                 }
               },
               requests.move

@@ -44,6 +44,15 @@ require('config')
 game_name = "unnamed mmo bullshit"
 
 function love.load()
+  items_empty = love.graphics.newImage("item_img/empty.png")
+  items_select = love.graphics.newImage("item_img/selected.png")
+  local items_raw = love.filesystem.read("items.json")
+  local items_crap = json.decode(items_raw)
+  items = {}
+  for i,v in pairs(items_crap) do
+    v.img = love.graphics.newImage("item_img/"..i..".png")
+    items[tonumber(i)] = v
+  end
 
   com.load()
 
