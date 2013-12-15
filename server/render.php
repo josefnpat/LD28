@@ -520,7 +520,7 @@ function api_use($user,$args){
     return make_error("Not enough AP.");
   }
 
-  if($item->player_lock + $duser->lock > $duser->lock_max){
+  if(isset($item->player_lock) and $item-player_lock + $duser->lock > $duser->lock_max){
     return make_error("Can't lock down any more.");
   }
 
