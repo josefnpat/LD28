@@ -254,6 +254,8 @@ gamestate_game.hitserver_dt = gamestate_game.hitserver
 gamestate_game.chat_timer = 1.5
 gamestate_game.chat_timer_dt = gamestate_game.chat_timer
 
+chat_last_id = 0
+
 function gamestate_game.update(self,dt)
   gamestate_game.hitserver_dt = gamestate_game.hitserver_dt + dt
   gamestate_game.chat_timer_dt = gamestate_game.chat_timer_dt + dt
@@ -261,12 +263,13 @@ function gamestate_game.update(self,dt)
     gamestate_game.hitserver_dt = 0
     com.enqueue_request({func="getuser"},requests.getuser)
     com.enqueue_request({func="getusers"},requests.getusers)
+    com.enqueue_request({func="msgs"},requests.msgs)
     if gamestate_game.chat_timer_dt > gamestate_game.chat_timer then
       gamestate_game.chat_timer_dt = 0
       com.enqueue_request({
           func="getchat",
           args={
-            time=stime
+            last_id=chat_last_id
           }
         },
         requests.getchat)

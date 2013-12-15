@@ -3,7 +3,7 @@ requests = {}
 function requests.getuser(response)
   userdata = response.ret
 
-  if userdata and 
+  if userdata and userdata.x and userdata.y and userdata.z and 
     gamestate_game.move_x and
     gamestate_game.move_y and
     gamestate_game.move_z then
@@ -126,6 +126,7 @@ function requests.sendchat(response)
 end
 
 function requests.getchat(response)
+
   if response.error then
     for _,v in pairs(response.error) do
       gamestate_game.msgbox_add("Error: "..v)
@@ -133,6 +134,9 @@ function requests.getchat(response)
   end
   if response.ret then
     for i,v in pairs(response.ret) do
+      if v.id > chat_last_id then
+        chat_last_id = v.id
+      end
       gamestate_game.msgbox_add(v.name..": "..v.data)
     end
   end
@@ -163,6 +167,19 @@ function requests.use(response)
 end
 
 function requests.attack(response)
+  if response.error then
+    for _,v in pairs(response.error) do
+      gamestate_game.msgbox_add("Error: "..v)
+    end
+  end
+  if response.ret then
+    for i,v in pairs(response.ret) do
+      gamestate_game.msgbox_add(v)
+    end
+  end
+end
+
+function requests.msgs(response)
   if response.error then
     for _,v in pairs(response.error) do
       gamestate_game.msgbox_add("Error: "..v)
