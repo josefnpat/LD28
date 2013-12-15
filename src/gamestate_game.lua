@@ -338,10 +338,9 @@ function gamestate_game.draw(self)
     "",100,100,600,"center")
   if userdata then
     for i = 1,8 do
+      love.graphics.draw(items_empty,i*64,0)
       if userdata.items[i..""] then
         love.graphics.draw(items[userdata.items[i..""]].img,i*64,0)
-      else
-        love.graphics.draw(items_empty,i*64,0)
       end
       if i == gamestate_game.item_select then
         love.graphics.draw(items_select,i*64,0)

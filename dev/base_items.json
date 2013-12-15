@@ -1,0 +1,86 @@
+{
+  "1": {
+    "name": "Missile Launcher",
+    "enemy_hp": -10,
+    "player_ap": -10,
+    "value": 20,
+    "use": false,
+    "t": 1
+  },
+  "2": {
+    "name": "Energy Drain",
+    "enemy_ap": -20,
+    "player_ap": -10,
+    "value": 10,
+    "use": false,
+    "t": 1
+  },
+  "3": {
+    "name": "Engine Jammer",
+    "enemy_evade": -50,
+    "player_ap": -20,
+    "value": 10,
+    "use": false,
+    "t": 1
+  },
+  "4": {
+    "name": "EMP",
+    "enemy_lock": 10,
+    "player_ap": -20,
+    "value": 10,
+    "use": false,
+    "t": 1
+  },
+  "5": {
+    "name": "Repair Arm",
+    "player_hp": 50,
+    "player_ap": -25,
+    "value": 10,
+    "use": true,
+    "t": 1
+  },
+  "6": {
+    "name": "Recharger",
+    "player_ap": 50,
+    "player_lock": 10,
+    "value": 10,
+    "use": true,
+    "t": 1
+  },
+  "7": {
+    "name": "Lock Scrambler",
+    "player_lock": -10,
+    "player_ap": -10,
+    "value": 10,
+    "use": true,
+    "t": 1
+  },
+  "8": {
+    "name": "Charged Armor",
+    "base_hp": 100,
+    "value": 10,
+    "use": false,
+    "t": 1
+  },
+  "9": {
+    "name": "Battery",
+    "base_ap": 10,
+    "value": 10,
+    "use": false,
+    "t": 1
+  },
+  "10": {
+    "name": "Thrusters",
+    "base_evade": 10,
+    "value": 10,
+    "use": false,
+    "t": 1
+  },
+  "11": {
+    "name": "Stabilizer",
+    "base_lock": -10,
+    "value": 10,
+    "use": false,
+    "t": 1
+  }
+}

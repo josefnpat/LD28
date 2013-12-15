@@ -1,0 +1,109 @@
+stdClass Object
+(
+    [1] => stdClass Object
+        (
+            [name] => Missile Launcher
+            [enemy_hp] => -20
+            [player_ap] => -20
+            [value] => 20
+            [use] => 
+            [t] => 1
+        )
+
+    [2] => stdClass Object
+        (
+            [name] => Energy Drain
+            [enemy_ap] => -40
+            [player_ap] => -20
+            [value] => 10
+            [use] => 
+            [t] => 1
+        )
+
+    [3] => stdClass Object
+        (
+            [name] => Engine Jammer
+            [enemy_evade] => -100
+            [player_ap] => -40
+            [value] => 10
+            [use] => 
+            [t] => 1
+        )
+
+    [4] => stdClass Object
+        (
+            [name] => EMP
+            [enemy_lock] => 20
+            [player_ap] => -40
+            [value] => 10
+            [use] => 
+            [t] => 1
+        )
+
+    [5] => stdClass Object
+        (
+            [name] => Repair Arm
+            [player_hp] => 100
+            [player_ap] => -50
+            [value] => 10
+            [use] => 1
+            [t] => 1
+        )
+
+    [6] => stdClass Object
+        (
+            [name] => Recharger
+            [player_ap] => 100
+            [player_lock] => 20
+            [value] => 10
+            [use] => 1
+            [t] => 1
+        )
+
+    [7] => stdClass Object
+        (
+            [name] => Lock Scrambler
+            [player_lock] => -20
+            [player_ap] => -20
+            [value] => 10
+            [use] => 1
+            [t] => 1
+        )
+
+    [8] => stdClass Object
+        (
+            [name] => Charged Armor
+            [base_hp] => 200
+            [value] => 10
+            [use] => 
+            [t] => 1
+        )
+
+    [9] => stdClass Object
+        (
+            [name] => Battery
+            [base_ap] => 20
+            [value] => 10
+            [use] => 
+            [t] => 1
+        )
+
+    [10] => stdClass Object
+        (
+            [name] => Thrusters
+            [base_evade] => 20
+            [value] => 10
+            [use] => 
+            [t] => 1
+        )
+
+    [11] => stdClass Object
+        (
+            [name] => Stabilizer
+            [base_lock] => -20
+            [value] => 10
+            [use] => 
+            [t] => 1
+        )
+
+)
