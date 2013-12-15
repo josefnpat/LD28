@@ -83,7 +83,6 @@ function gamestate_game.init()
     gamestate_game.msgbox.w-gamestate_game.msgbox.x*2,
     gamestate_game.msgbox.h-gamestate_game.msgbox.y-16
   )
-  gamestate_game.msgbox_add("Welcome space travler. A friendly reminder: You only get one life.")
 
   gamestate_game.msgbox_chatin = loveframes.Create("textinput",gamestate_game.frame_msgbox)
   gamestate_game.msgbox_chatin:SetLimit(128)

@@ -12,7 +12,8 @@ function gamestate_key.init(self)
   gamestate_key.frame:SetSize(320, 8*32)
   gamestate_key.frame:SetName("Login")
   gamestate_key.frame:ShowCloseButton(false)
-  gamestate_key.frame:Center()
+  gamestate_key.frame:CenterX()
+  gamestate_key.frame:SetY(120)
   gamestate_key.frame:SetDraggable(false)
 
   gamestate_key.text_username = loveframes.Create("text",gamestate_key.frame)
@@ -93,6 +94,13 @@ function gamestate_key.init(self)
    
   end
 
+end
+
+gamestate_key.logo = love.graphics.newImage("logo.png")
+
+function gamestate_key.draw(self)
+  love.graphics.printf("Welcome space travler. A friendly reminder: You only get one life.\nVisit http://missingsentinelsoftware.com for more games.\n~josefnpat",0,64,800,"center")
+  love.graphics.draw(gamestate_key.logo,(800-320)/2,400)
 end
 
 function gamestate_key.enter(self)
