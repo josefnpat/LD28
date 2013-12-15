@@ -75,9 +75,14 @@ function get_user_info($user,$val,$max=false){
 }
 
 function default_user($user){
-  $user->x = isset($user->x) ? $user->x : 0;
-  $user->y = isset($user->y) ? $user->y : 0;
-  $user->z = isset($user->z) ? $user->z : 0;
+
+  $user->gameage = isset($user->gameage) ? $user->gameage : time();
+  $user->kills = isset($user->kills) ? $user->kills : 0;
+  $user->deaths = isset($user->deaths) ? $user->deaths : 0;
+
+  $user->x = isset($user->x) ? $user->x : rand(-5,5);
+  $user->y = isset($user->y) ? $user->y : rand(-5,5);
+  $user->z = isset($user->z) ? $user->z : rand(-5,5);
   $user->warp_eta = isset($user->warp_eta) ? $user->warp_eta : 0;
   $user->warp_range = isset($user->warp_range) ? $user->warp_range : 10;
   $user->speed = isset($user->speed) ? $user->speed : 1;
@@ -105,6 +110,7 @@ function default_user($user){
   $user->cloak_update = isset($user->cloak_update) ? $user->cloak_update : time();
 
   $user->credits = isset($user->credits) ? $user->credits : 100;
+  $user->msgs = isset($user->msgs) ? $user->msgs : array();
 
   return $user;
 }
@@ -124,8 +130,21 @@ function make_error($s){
 }
 
 function update_user($user){
+
   $dbsave = false;
   $duser = default_user($user);
+
+  if(isset($user->dead)){
+    $keep = array("name","password","key","join","kills","deaths");
+    foreach($user as $key => $value){
+      if(!in_array($key,$keep)){
+        unset($user->$key);
+      }
+    }
+    $user = default_user($user);
+    $dbsave = true;
+  }
+
   if($duser->warp_eta <= time()){
     $user->warp_eta = 0;
     $dbsave = true;
@@ -157,6 +176,7 @@ function update_user($user){
     }
 
   }
+
   if($dbsave){
     dbsave();
   }
@@ -199,6 +219,7 @@ function api_getuser($user,$args){
 
 function api_getusers($user,$args){
   global $db;
+
   $duser = default_user($user);
   if($duser->warp_eta > 0){
     return array();
@@ -330,6 +351,18 @@ function api_attack($user,$args){
           $max = $raw[1]."_max";
           $info_attack[] = "You modify ".$valid_target->name."'s ".$raw[1]." by ".$modival.".".
             " (".floor(($valid_target->$raw[1]/$valid_target->$max)*100)."%)";
+
+          $valid_target->msgs[] = $user->name." modifies your ".$raw[1]." by ".$modival.".".
+            " (".floor(($valid_target->$raw[1]/$valid_target->$max)*100)."%)";
+
+          if($valid_target->hp <= 0 ){
+            $valid_target->dead = true;
+            $user->credits += rand(10,20);
+            $user->kills += 1;
+            $valid_target->deaths += 1;
+            $user->msgs[] = "You kill ".$user->name.".";
+            $valid_target->msgs[] = $user->name." kills you.";
+          }
         }
 
       }
@@ -354,10 +387,17 @@ function api_sendchat($user,$args){
   if($args->msg == ""){
     return make_error("No message to send.");
   }
+
+  if(!isset($db->chat_cid)){
+    $db->chat_cid = 0;
+  }
+
   $msgobj = new stdClass();
   $msgobj->name = $user->name;
-  $msgobj->time = microtime(true);
+  $msgobj->id = $db->chat_cid;
   $msgobj->data = substr($args->msg,0,128);
+
+  $db->chat_cid++;
 
   if(!isset($db->chat)){
     $db->chat = array();
@@ -374,14 +414,14 @@ function api_sendchat($user,$args){
 
 function api_getchat($user,$args){
   global $db;
-  if(!isset($args->time) or !is_int($args->time)){
+  if(!isset($args->last_id) or !is_int($args->last_id)){
     return make_error("Invalid arguments.");
   }
   $ret = new stdClass();
   $ret->ret = array();
   if(isset($db->chat)){
     foreach($db->chat as $msg){
-      if(floor($msg->time)+1 >= $args->time and $user->name != $msg->name){
+      if($user->name != $msg->name and $msg->id > $args->last_id){
         $ret->ret[] = $msg;
       }
     }
@@ -484,4 +524,13 @@ function api_use($user,$args){
 
   return new stdClass();
 
+}
+
+function api_msgs($user,$args){
+  $duser = default_user($user);
+  $ret = new stdClass();
+  $ret->ret = $duser->msgs;
+  $user->msgs = array();
+  dbsave();
+  return $ret;
 }
