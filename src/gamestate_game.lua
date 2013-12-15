@@ -126,8 +126,113 @@ function gamestate_game.init()
     gamestate_game.playerlist.w-gamestate_game.playerlist.x*2,
     gamestate_game.playerlist.h-gamestate_game.playerlist.y-16
   )
- 
 
+  -- Item info
+
+  gamestate_game.iteminfo = {}
+  gamestate_game.iteminfo.x = 16
+  gamestate_game.iteminfo.y = 16
+  gamestate_game.iteminfo.w = 256+32
+  gamestate_game.iteminfo.h = 64 + 40
+  gamestate_game.frame_iteminfo = loveframes.Create("frame")
+  gamestate_game.frame_iteminfo:SetName("Item Info")
+  gamestate_game.frame_iteminfo:SetSize(gamestate_game.iteminfo.w,gamestate_game.iteminfo.h)
+  gamestate_game.frame_iteminfo:SetPos(100,100)
+  gamestate_game.frame_iteminfo:ShowCloseButton(false) 
+
+  gamestate_game.iteminfo_image = loveframes.Create("image", gamestate_game.frame_iteminfo)
+  gamestate_game.iteminfo_image:SetPos(8,32)
+
+  gamestate_game.iteminfo_text = loveframes.Create("text", gamestate_game.frame_iteminfo)
+  gamestate_game.iteminfo_text:SetPos(16+64,32)
+  gamestate_game.iteminfo_text:SetSize(
+    gamestate_game.iteminfo.w-64-16-96,
+    gamestate_game.iteminfo.h - 32)
+  
+  gamestate_game.iteminfo_use = loveframes.Create("button",gamestate_game.frame_iteminfo)
+  gamestate_game.iteminfo_use:SetText("Use")
+  gamestate_game.iteminfo_use:SetSize(64,20)
+  gamestate_game.iteminfo_use:SetPos(gamestate_game.iteminfo.w-64-8,32+0)
+  gamestate_game.iteminfo_use.OnClick = function(object)
+    com.enqueue_request({
+        func="use",
+        args={
+          slot=gamestate_game.item_select,
+        }
+      },
+      requests.use)
+  end
+
+  gamestate_game.iteminfo_buy = loveframes.Create("button",gamestate_game.frame_iteminfo)
+  gamestate_game.iteminfo_buy:SetText("Buy")
+  gamestate_game.iteminfo_buy:SetSize(64,20)
+  gamestate_game.iteminfo_buy:SetPos(gamestate_game.iteminfo.w-64-8,32+20)
+  gamestate_game.iteminfo_buy.OnClick = function(object)
+    com.enqueue_request({
+        func="buy",
+        args={
+          slot=gamestate_game.item_select,
+          item=object.item_id
+        }
+      },
+      requests.buy)
+    gamestate_game.iteminfo_buy:SetEnabled(false)
+    gamestate_game.iteminfo_sell:SetEnabled(true)
+  end
+
+  gamestate_game.iteminfo_sell = loveframes.Create("button",gamestate_game.frame_iteminfo)
+  gamestate_game.iteminfo_sell:SetText("Sell (50%)")
+  gamestate_game.iteminfo_sell:SetSize(64,20)
+  gamestate_game.iteminfo_sell:SetPos(gamestate_game.iteminfo.w-64-8,32+40)
+  gamestate_game.iteminfo_sell.OnClick = function(object)
+    com.enqueue_request({
+        func="sell",
+        args={
+          slot=gamestate_game.item_select,
+        }
+      },
+      requests.sell)
+    gamestate_game.iteminfo_sell:SetEnabled(false)
+    gamestate_game.iteminfo_buy:SetEnabled(true)
+  end
+
+  gamestate_game.showitem(userdata.items[1],false,false)
+
+  -- Market list
+
+  gamestate_game.itemlist = {}
+  gamestate_game.itemlist.x = 16
+  gamestate_game.itemlist.y = 32
+  gamestate_game.itemlist.w = 160
+  gamestate_game.itemlist.h = love.graphics.getHeight() / 2
+
+  gamestate_game.frame_itemlist = loveframes.Create("frame")
+  gamestate_game.frame_itemlist:SetName("Market")
+  gamestate_game.frame_itemlist:SetSize(gamestate_game.itemlist.w,gamestate_game.itemlist.h)
+  gamestate_game.frame_itemlist:ShowCloseButton(false)
+  gamestate_game.frame_itemlist:SetPos(
+    love.graphics.getWidth()-gamestate_game.itemlist.w-160,
+    love.graphics.getHeight()-gamestate_game.itemlist.h)
+
+  gamestate_game.itemlist_list = loveframes.Create("list", gamestate_game.frame_itemlist)
+  gamestate_game.itemlist_list:SetPos(gamestate_game.itemlist.x,gamestate_game.itemlist.y)
+  gamestate_game.itemlist_list:SetSize(
+    gamestate_game.itemlist.w-gamestate_game.itemlist.x*2,
+    gamestate_game.itemlist.h-gamestate_game.itemlist.y-16
+  )
+
+  for i,v in pairs(items) do
+    local button = loveframes.Create("button")
+    button:SetSize(100,20)
+    button:SetText(v.name)
+    button.item_id = tonumber(i)
+    button.OnClick = function(object)
+      gamestate_game.showitem(object.item_id,not userdata.items[gamestate_game.item_select])
+    end
+    gamestate_game.itemlist_list:AddItem(button)
+  end
+
+  
 end
 
 gamestate_game.msgbox_data = {}
@@ -187,6 +292,30 @@ function gamestate_game.update(self,dt)
 
 end
 
+function gamestate_game.showitem(id,buy,sell)
+
+  gamestate_game.iteminfo_buy:SetEnabled(buy)
+  gamestate_game.iteminfo_buy.item_id = id
+  gamestate_game.iteminfo_sell:SetEnabled(sell)
+  gamestate_game.iteminfo_sell.item_id = id
+
+  if items[id] then
+    gamestate_game.iteminfo_use:SetEnabled(items[id].use)
+    gamestate_game.iteminfo_image:SetImage(items[id].img)
+    local s = items[id].name.." \n "
+    for i,v in pairs(items[id]) do
+      if i ~= "name" and i ~= "img" and i ~= "use" then
+        s=s..i.." "..v.." \n "
+      end
+    end
+    gamestate_game.iteminfo_text:SetText(s)
+  else
+    gamestate_game.iteminfo_use:SetEnabled(false)
+    gamestate_game.iteminfo_image:SetImage(items_empty)
+    gamestate_game.iteminfo_text:SetText("Select a slot with 1-8, or an item from the market window.")
+  end
+end
+
 gamestate_game.item_select = 1
 
 function gamestate_game.draw(self)
@@ -201,12 +330,13 @@ function gamestate_game.draw(self)
     "Your lock: "..userdata.lock.."/"..userdata.lock_max.."\n"..
     "Your cloak: "..userdata.cloak.."/"..userdata.cloak_max.."\n"..
     "Your speed is: "..userdata.speed.." m/s\n"..
+    "Your have "..userdata.credits.." credits\n"..
     ( (userdata.warp_eta>0) and ("ETA "..round(userdata.warp_eta-ctime).." seconds") or ("Not in warp." ) ).."\n"..
     "",100,100,600,"center")
   if userdata then
     for i = 1,8 do
-      if userdata.items[i] then
-        love.graphics.draw(items[i].img,i*64,0)
+      if userdata.items[i..""] then
+        love.graphics.draw(items[userdata.items[i..""]].img,i*64,0)
       else
         love.graphics.draw(items_empty,i*64,0)
       end
@@ -224,6 +354,7 @@ function gamestate_game.keypressed(self,key)
   local kan = tonumber(key)
   if kan and kan >= 1 and kan <=8 then
     gamestate_game.item_select = kan
+    gamestate_game.showitem(userdata.items[kan..""],false,userdata.items[kan..""])
   end
 end
 

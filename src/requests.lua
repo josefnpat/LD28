@@ -64,7 +64,7 @@ function requests.getusers(response)
     if usersdata then
       for _,v in pairs(usersdata) do
         local button = loveframes.Create("button")
-        button:SetSize(100, 25)
+        button:SetSize(100, 20)
         button:SetText(v.name.." ("..v.x..","..v.y..","..v.z..")")
         if v.x ~= userdata.x or 
           v.y ~= userdata.y or 
@@ -93,7 +93,7 @@ function requests.getusers(response)
                   item = gamestate_game.item_select
                 }
               },
-              requests.move
+              requests.attack
             )
           end
 
@@ -134,6 +134,43 @@ function requests.getchat(response)
   if response.ret then
     for i,v in pairs(response.ret) do
       gamestate_game.msgbox_add(v.name..": "..v.data)
+    end
+  end
+end
+
+function requests.buy(response)
+  if response.error then
+    for _,v in pairs(response.error) do
+      gamestate_game.msgbox_add("Error: "..v)
+    end
+  end
+end
+
+function requests.sell(response)
+  if response.error then
+    for _,v in pairs(response.error) do
+      gamestate_game.msgbox_add("Error: "..v)
+    end
+  end
+end
+
+function requests.use(response)
+  if response.error then
+    for _,v in pairs(response.error) do
+      gamestate_game.msgbox_add("Error: "..v)
+    end
+  end
+end
+
+function requests.attack(response)
+  if response.error then
+    for _,v in pairs(response.error) do
+      gamestate_game.msgbox_add("Error: "..v)
+    end
+  end
+  if response.ret then
+    for i,v in pairs(response.ret) do
+      gamestate_game.msgbox_add(v)
     end
   end
 end
