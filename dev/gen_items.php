@@ -23,7 +23,7 @@ $mod['base_lock'] = 1.5;
 
 $n = array();
 
-foreach($j as $item_real){
+foreach($j as $item_key => $item_real){
 
   for($i = 1; $i <=6; $i++){
 
@@ -37,6 +37,7 @@ foreach($j as $item_real){
     $item->t = $i;
     $item->value *= $i;
     $n[] = $item;
+    $item->img_key = $item_key;
   }
   
 }

@@ -50,8 +50,12 @@ function love.load()
   local items_crap = json.decode(items_raw)
   items = {}
   for i,v in pairs(items_crap) do
-    v.img = love.graphics.newImage("item_img/"..i..".png")
     items[tonumber(i)] = v
+  end
+
+  items_img = {}
+  for i = 1,12 do
+    items_img[i] = love.graphics.newImage("item_img/"..i..".png")
   end
 
   com.load()

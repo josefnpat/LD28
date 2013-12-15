@@ -304,10 +304,14 @@ function gamestate_game.showitem(id,buy,sell)
 
   if items[id] then
     gamestate_game.iteminfo_use:SetEnabled(items[id].use)
-    gamestate_game.iteminfo_image:SetImage(items[id].img)
+
+    local img_key = items[id].img_key
+    local img = items_img[tonumber(img_key)]
+
+    gamestate_game.iteminfo_image:SetImage(img)
     local s = items[id].name.." \n "
     for i,v in pairs(items[id]) do
-      if i ~= "name" and i ~= "img" and i ~= "use" then
+      if i ~= "name" and i ~= "img" and i ~= "use" and i ~= "img_key" and i ~= "t" then
         s=s..i.." "..v.." \n "
       end
     end
@@ -340,7 +344,9 @@ function gamestate_game.draw(self)
     for i = 1,8 do
       love.graphics.draw(items_empty,i*64,0)
       if userdata.items[i..""] then
-        love.graphics.draw(items[userdata.items[i..""]].img,i*64,0)
+        local img_key = items[userdata.items[i..""]].img_key
+        local img = items_img[tonumber(img_key)]
+        love.graphics.draw(img,i*64,0)
       end
       if i == gamestate_game.item_select then
         love.graphics.draw(items_select,i*64,0)
