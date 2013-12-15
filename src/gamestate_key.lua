@@ -86,22 +86,11 @@ function gamestate_key.init(self)
     )
     settings.data.username = gamestate_key.username:GetValue()
 
-    local obj = {
-      requests = {
-        {func = "getuser"}
-      }
-    }
-
-    local response = com.blocking_request(obj)
-
-    if response.error then
-      gamestate_key.text_info:SetText(response.error[1])
-      gamestate_key.text_info_dt = 0
-    else
-      userdata = response.results[1].ret
-      Gamestate.switch(states['game'])
-    end
-
+    com.enqueue_request(
+      {func="getuser"},
+      requests.getuser
+    )
+   
   end
 
 end

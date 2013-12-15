@@ -9,6 +9,8 @@ settings = {}
 settings.file = "settings.json"
 settings.appver = 1
 
+require('requests')
+
 if love.filesystem.exists(settings.file) then
   local rawjson = love.filesystem.read(settings.file)
   settings.data = json.decode(rawjson)
@@ -51,15 +53,21 @@ function love.load()
 
 end
 
+stime = 0 
+ctime = stime
+
 function love.update(dt)
-
-   com.update(dt)
-
+  ctime = ctime + dt
+  if math.abs(stime - ctime) > 1 then
+    ctime = stime
+  end  
+  com.update(dt)
   loveframes.update(dt)
 end
                  
 function love.draw()
   loveframes.draw()
+  love.graphics.print(ctime,0,0)
 end
  
 function love.mousepressed(x, y, button)

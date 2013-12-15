@@ -1,6 +1,7 @@
 require('love.filesystem')
 require('config')
 require('love.timer')
+http = require('socket.http')
 
 thisThread = love.thread.getThread()
 
