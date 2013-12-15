@@ -27,14 +27,23 @@ function render_request($user,$request){
 $userbase = array();
 $userbase['ap'] = 100;
 $userbase['ap_max'] = 100;
+$userbase['ap_rate'] = 1;
+
 $userbase['hp'] = 100;
 $userbase['hp_max'] = 100;
+$userbase['hp_rate'] = 0;
+
 $userbase['evade'] = 10;
 $userbase['evade_max'] = 10;
+$userbase['evade_rate'] = 0.1;
+
 $userbase['lock'] = 0;
 $userbase['lock_max'] = 120;
+$userbase['lock_rate'] = -1;
+
 $userbase['cloak'] = 0;
-$userbase['cloak_max'] = 43200;
+$userbase['cloak_max'] = 0;
+$userbase['cloak_rate'] = 100;
 
 function get_user_info($user,$val,$max=false){
   global $userbase;
@@ -73,7 +82,7 @@ function default_user($user){
   $user->warp_range = isset($user->warp_range) ? $user->warp_range : 10;
   $user->speed = isset($user->speed) ? $user->speed : 1;
   $user->scan_range = isset($user->scan_range) ? $user->scan_range : 10;
-  $user->items = array(12);//isset($user->items) ? $user->items : array(1);
+  $user->items = isset($user->items) ? $user->items : array(1 => 1);
 
   $user->ap = get_user_info($user,"ap");
   $user->ap_max = get_user_info($user,"ap",true);
@@ -81,15 +90,21 @@ function default_user($user){
 
   $user->hp = get_user_info($user,"hp");
   $user->hp_max = get_user_info($user,"hp",true);
+  $user->hp_update = isset($user->hp_update) ? $user->hp_update : time();
 
   $user->evade = get_user_info($user,"evade");
   $user->evade_max = get_user_info($user,"evade",true);
+  $user->evade_update = isset($user->evade_update) ? $user->evade_update : time();
 
   $user->lock = get_user_info($user,"lock");
   $user->lock_max = get_user_info($user,"lock",true);
+  $user->lock_update = isset($user->lock_update) ? $user->lock_update : time();
 
   $user->cloak = get_user_info($user,"cloak");
   $user->cloak_max = get_user_info($user,"cloak",true);
+  $user->cloak_update = isset($user->cloak_update) ? $user->cloak_update : time();
+
+  $user->credits = isset($user->credits) ? $user->credits : 100;
 
   return $user;
 }
@@ -115,15 +130,32 @@ function update_user($user){
     $user->warp_eta = 0;
     $dbsave = true;
   }
-  $new_ap = time() - $user->ap_update;
 
-  if($new_ap > 0){
-    $user->ap += $new_ap;
-    if($user->ap > $user->ap_max){
-      $user->ap = $user->ap_max;
+  global $userbase;
+
+  foreach(array("ap","hp","evade","lock","cloak") as $type){
+
+    $type_update = $type."_update";
+    $type_max = $type."_max";
+
+    $new_type = time() - $user->$type_update;
+
+    if($new_type > 0){
+
+      $user->$type += $new_type*$userbase[$type.'_rate'];
+
+      if($user->$type < 0){
+        $user->$type = 0;
+      }
+
+      if($user->$type > $user->$type_max){
+        $user->$type = $user->$type_max;
+      }
+
+      $user->$type_update = time();
+      $dbsave = true;
     }
-    $user->ap_update = time();
-    $dbsave = true;
+
   }
   if($dbsave){
     dbsave();
@@ -140,6 +172,7 @@ function api_getuser($user,$args){
   $ruser->warp_range = $duser->warp_range;
   $ruser->scan_range = $duser->scan_range;
   $ruser->speed = $duser->speed;
+
   $ruser->ap = $duser->ap;
   $ruser->ap_max = $duser->ap_max;
 
@@ -155,7 +188,10 @@ function api_getuser($user,$args){
   $ruser->cloak = $duser->cloak;
   $ruser->cloak_max = $duser->cloak_max;
 
+  $ruser->credits = $duser->credits;
+
   $ruser->items = $duser->items;
+
   $ret = new stdClass();
   $ret->ret = $ruser;
   return $ret;
@@ -251,15 +287,59 @@ function api_attack($user,$args){
       if($duser->x == $ddbuser->x and
         $duser->y == $ddbuser->y and
         $duser->z == $ddbuser->z){
-        $valid_target = true;
+        $valid_target = $ddbuser;
         break;
       } else {
         return make_error("Target no longer at locaton.");
       }
     }
   }
+
   if($valid_target){
-    return make_error("TODO: Attack with item ".$args->item."!");
+    global $items;
+    if(!isset($user->items[$args->item])){
+      return make_error("Nothing to use.");
+    }
+    $user_items = $user->items;
+    $slot = $args->item;
+    $item_id = $user_items[$slot];
+    $item = $items->$item_id;
+    
+    if($item->use){
+      return make_error("Can't attack with this item.");
+    }
+
+    if($item->player_ap < 0 and $user->ap < -$item->player_ap){
+      return make_error("Not enough AP.");
+    }
+
+
+    $info_attack = array();
+    foreach($item as $modikey => $modival){
+      $raw = explode("_",$modikey);
+      if(count($raw) == 2){
+
+        if($raw[0]=="player"){
+          $user->$raw[1] += $modival;
+          $user->$raw[1] = get_user_info($user,$raw[1]);
+        }
+
+        if($raw[0]=="enemy"){
+          $valid_target->$raw[1] += $modival;
+          $valid_target->$raw[1] = get_user_info($valid_target,$raw[1]);
+          $max = $raw[1]."_max";
+          $info_attack[] = "You modify ".$valid_target->name."'s ".$raw[1]." by ".$modival.".".
+            " (".floor(($valid_target->$raw[1]/$valid_target->$max)*100)."%)";
+        }
+
+      }
+    }
+    dbsave();
+
+    $ret = new stdClass();
+    $ret->ret = $info_attack;
+    return $ret;
+
   } else {
     return make_error("Invalid target.");
   }
@@ -308,4 +388,100 @@ function api_getchat($user,$args){
   }
   array_reverse($ret->ret);
   return $ret;
+}
+
+function api_buy($user,$args){
+  global $items;
+  $duser = default_user($user);
+  $valid = true;
+  if(!isset($args->slot)or !is_int($args->slot)){ $valid = false; }
+  if(!isset($args->item)or !is_int($args->item)){ $valid = false; }
+  if(!$valid){
+    return make_error("Invalid arguments.");
+  }
+  if($args->slot < 1 or $args->slot > 8){
+    return make_error("Invalid slot.");
+  }
+
+  $item_id = $args->item;
+
+  if(!isset($items->$item_id)){
+    return make_error("Invalid item.");
+  }
+
+  $item = $items->$item_id;
+
+  if($duser->credits < $item->value){
+    return make_error("You don't have enough credits.");
+  }
+
+  if(isset($user->items[$args->slot])){
+    return make_error("This slot is already filled.");
+  }
+  
+  $user->items[$args->slot] = $args->item;
+  $user->credits -= $item->value;
+
+  dbsave();
+  return new stdClass();
+}
+
+function api_sell($user,$args){
+  global $items;
+  $duser = default_user($user);
+  $valid = true;
+  if(!isset($args->slot)or !is_int($args->slot)){ $valid = false; }
+  if(!$valid){
+    return make_error("Invalid arguments.");
+  }
+  if(!isset($user->items[$args->slot])){
+    return make_error("Nothing to sell.");
+  }
+  $item_id = $user->items[$args->slot];
+  
+  $item = $items->$item_id;
+
+  $user->credits += floor($item->value/2);
+  unset($user->items[$args->slot]);
+  dbsave();
+
+}
+
+function api_use($user,$args){
+  global $items;
+  $duser = default_user($user);
+  $valid = true;
+  if(!isset($args->slot)or !is_int($args->slot)){ $valid = false; }
+  if(!$valid){
+    return make_error("Invalid arguments.");
+  }
+  if(!isset($user->items[$args->slot])){
+    return make_error("Nothing to use.");
+  }
+  $user_items = $user->items;
+  $slot = $args->slot;
+  $item_id = $user_items[$slot];
+  $item = $items->$item_id;
+  
+  if(!$item->use){
+    return make_error("Can't use this item.");
+  }
+
+  if($item->player_ap < 0 and $user->ap < -$item->player_ap){
+    return make_error("Not enough AP.");
+  }
+
+  foreach($item as $modikey => $modival){
+    $raw = explode("_",$modikey);
+    if(count($raw) == 2){
+      if($raw[0]=="player"){
+        $user->$raw[1] += $modival;
+        $user->$raw[1] = get_user_info($user,$raw[1]);
+      }
+    }
+  }
+  dbsave();
+
+  return new stdClass();
+
 }
