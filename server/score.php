@@ -41,9 +41,16 @@ foreach($db->users as $user){
 <?php
 
 uasort($db->users,'gameage_sort');
+$count = 0;
 foreach($db->users as $user){
+  $count++;
   if(isset($user->gameage)){
-    echo "<li>".$user->name."(".$user->gameage.")</li>";
+    echo "<li>";
+    echo $user->name." (".(time()-$user->gameage)."s)";
+    if($count <= 10){
+      echo " (".$user->x.",".$user->y.",".$user->z.")";
+    }
+    echo "</li>";
   }
 }
 ?>
