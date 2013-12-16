@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SRC="src"
-NAME="LD28"
+NAME="BPMMO"
 VERSION=0.8.0
 
 GIT=`sh ./distgit.sh $SRC`
