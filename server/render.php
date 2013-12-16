@@ -372,7 +372,7 @@ function api_attack($user,$args){
             $user->credits += rand(10,20);
             $user->kills += 1;
             $valid_target->deaths += 1;
-            $user->msgs[] = "You kill ".$user->name.".";
+            $user->msgs[] = "You kill ".$valid_target->name.".";
             $valid_target->msgs[] = $user->name." kills you.";
             update_user($valid_target);
           }
@@ -520,7 +520,7 @@ function api_use($user,$args){
     return make_error("Not enough AP.");
   }
 
-  if(isset($item->player_lock) and $item-player_lock + $duser->lock > $duser->lock_max){
+  if(isset($item->player_lock) and $item->player_lock + $duser->lock > $duser->lock_max){
     return make_error("Can't lock down any more.");
   }
 
