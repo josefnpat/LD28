@@ -59,3 +59,5 @@ Coincidentally, this game is the first publicly released MMO make with the LÖVE
 The client was made for the LÖVE 0.8.0 framework, and uses [LoveFrames](https://github.com/NikolaiResokav/LoveFrames) with the [Gray Theme](https://github.com/unekPL/loveframes-gray-theme). It signs the http communications with a [digital signature](http://en.wikipedia.org/wiki/Digital_signature) and sends it to the PHP server. The PHP server then recieves it and confirms the signature, and operates on a raw data that is ZLIB compressed into memory via memcached.
 
 This game was made in 48 hours for [LD28](http://www.ludumdare.com/compo/ludum-dare-28/?action=preview&uid=11249).
+
+For more games, visit [missingsentinelsoftware.com](http://missingsentinelsoftware.com)! ~josefnpat
