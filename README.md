@@ -4,7 +4,7 @@
 
 Introducing the 48 hour MMO. You said it was a bad idea, and from the start and in retrospect, it probably was. Regardless, it's an MMO, it's free, and it's technically in 3D, as requested.
 
-Coincidentally, this game is the first publicly released MMO make with the LÖVE framework.
+Coincidentally, this game is the first publicly released MMO made with the LÖVE framework.
 
 ### How to play
 
